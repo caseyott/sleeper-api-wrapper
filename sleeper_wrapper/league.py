@@ -137,6 +137,34 @@ class League(BaseApi):
 		
 		return clean_standings_list
 
+	def get_current_standings(self, rosters: list, users: list) -> dict:
+		"""Creates standings based on the team's wins, losses, and points.
+
+		Args:
+		rosters: 
+			List of rosters for the league.
+		users: list
+			List of user IDs for the league.
+
+		Returns:
+		A dictionary with the team name as the key and a tuple of (wins, losses, fpts, ppts) as the value.
+		"""
+		users_dict = self.map_users_to_team_name(users)
+
+		standings = []
+		rank = 1
+		for roster in rosters:
+			team = {}
+			team['wins'] = roster["settings"]["wins"]
+			team['losses'] = roster["settings"]["losses"]
+			team['fpts'] = roster["settings"]["fpts"]
+			team['pp_points'] = roster["settings"]["ppts"]
+			team['name'] = users_dict.get(roster["owner_id"], "Team name not available")
+			team['rank'] = rank
+			rank += 1
+
+		return standings
+
 	def map_rosterid_to_ownerid(self, rosters: list) -> dict:
 		"""Creates a mapping from roster ID to owner ID.
 		
